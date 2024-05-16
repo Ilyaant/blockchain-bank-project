@@ -12,3 +12,7 @@ bank_contract = Contract('0xB6DEBA730C1Dd36E11cd7dB243f1727533828D0e')
 
 curr_balance = bank_contract.getStorage({'from': account})
 print(f'Current balance: {curr_balance}')
+
+bank_contract.register('acc0', 'acc0', 2000, {'from': account})
+bank_contract.register('acc1', 'acc1', 1000, {'from': account1})
+bank_contract.register('acc2', 'acc2', 2000, {'from': account2})
