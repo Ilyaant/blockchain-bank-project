@@ -64,5 +64,5 @@
 10. Выполнить `brownie networks add Ethereum ganache-local host=http://127.0.0.1:7545 chainid=5777`, где `host` и `chainid` берутся из проекта Ganache.
 11. Выполнить `brownie run scripts/deploy.py --network ganache-local`
 12. Из вывода предыдущей команды скопировать адреса задеплоенных контрактов и заменить ими имеющиеся адреса в файлах `app.py` и `interact.py`
-13. Запустить файл `interact.py`
+13. Выполнить `brownie run scripts/interact.py`
 14. Установка завершена, для работы с программой запустить файл `app.py`
