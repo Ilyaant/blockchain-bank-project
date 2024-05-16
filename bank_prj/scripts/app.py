@@ -1,5 +1,5 @@
-import PySimpleGUI as sg
 import os
+import PySimpleGUI as sg
 from brownie import accounts, Contract, network
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,9 +24,11 @@ def find_client(login):
             break
     return client
 
-def main_window(acc):
+def main_window(acc, login):
+    client = find_client(login)
     layout_main = [
         [sg.Text(f'Ваш баланс: {credit_contract.balanceOf(acc)} CRT', key='-MAIN-BALANCE-')],
+        [sg.Text(f'Ваша задолженность: {client[4][2]} CRT', key='-MAIN-RETURN-')],
         [sg.Button('Взять кредит'), sg.Push(), sg.Button('Вернуть кредит')],
         [sg.Push(), sg.Button('Выйти')]
     ]
@@ -40,7 +42,6 @@ def take_credit_window():
         [sg.Push(), sg.InputText(key='-CREDIT-MONTH-'), sg.Push()],
         [sg.Push(), sg.Button('Рассчитать сумму'), sg.Push()],
         [sg.Push(), sg.Text('Общая сумма кредита составит:', key='-TOTAL-CREDIT-'), sg.Push()],
-        [sg.Push(), sg.Text('Ежемесячный платеж составит:', key='-TOTAL-MONTH-'), sg.Push()],
         [sg.Push(), sg.Button('Взять кредит'), sg.Push()],
         [sg.Push(), sg.Button('Выйти')]
     ]
@@ -94,7 +95,7 @@ while True:
         if values['-LOGIN-'] == 'acc2':
             acc_to_use = account2
 
-        window_main = main_window(acc_to_use)
+        window_main = main_window(acc_to_use, login)
         while True:
             event_m, values_m = window_main.read()
             if event_m == sg.WINDOW_CLOSED or event_m == 'Выйти':
@@ -120,6 +121,8 @@ while True:
                             bank_contract.takeCredit(login, pwd, s, m, {'from': acc_to_use})
                             sg.Popup('Успешно оформили кредит', title='Успех')
                             window_main['-MAIN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
+                            cl = find_client(login)
+                            window_main['-MAIN-RETURN-'].update(f'Ваша задолженность: {cl[4][2]} CRT')
                         except:
                             sg.Popup('Не получилось оформить кредит', title='Ошибка')
                     
@@ -140,6 +143,7 @@ while True:
                             window_return_credit['-RETURN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
                             cl = find_client(login)
                             window_return_credit['-RETURN-SUM-'].update(f'Сумма к погашению: {cl[4][2]} CRT')
+                            window_main['-MAIN-RETURN-'].update(f'Ваша задолженность: {cl[4][2]} CRT')
                         except:
                             sg.Popup('Не получилось внести платеж', title='Ошибка')
 
