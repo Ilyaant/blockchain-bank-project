@@ -49,7 +49,7 @@
 
 Задолженность клиента на главном окне снова составляет 0 CRT:
 
-![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/2b17df5a-d6b7-4e7f-a4c9-d206ab07042d)
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/72f668e8-bda7-45f8-b6f3-7a7f5ccfa710)
 
 ## Инструкция по установке
 
