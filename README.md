@@ -52,4 +52,17 @@
 ![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/72f668e8-bda7-45f8-b6f3-7a7f5ccfa710)
 
 ## Инструкция по установке
-
+1. Установить Ganache: https://archive.trufflesuite.com/ganache/
+2. Установить библиотеку brownie: `pip install eth-brownie`
+3. Установить библиотеку PySimpleGUI: `pip install pysimplegui`
+4. Создать пустую папку и выполнить в ней `brownie init`
+5. Копировать файлы контрактов из этого репозитория в папку `contracts/`
+6. Копировать файлы скриптов из этого репозитория в папку `scripts/`
+7. Копировать файл `brownie-config.yaml` в созданную папку проекта
+8. Создать в папке проекта файл .env, в котором определить переменные `PRIVATE_KEY`, `PRIVATE_KEY1`, `PRIVATE_KEY2`, присвоив им приватные ключи 0-го, 1-го и 2-го адресов тестовой сети Ganache соответственно в формате `PRIVATE_KEY = "0x..."`
+9. Выполнить `brownie compile` в папке проекта
+10. Выполнить `brownie networks add Ethereum ganache-local host=http://127.0.0.1:7545 chainid=5777`, где `host` и `chainid` берутся из проекта Ganache.
+11. Выполнить `brownie run scripts/deploy.py --network ganache-local`
+12. Из вывода предыдущей команды скопировать адреса задеплоенных контрактов и заменить ими имеющиеся адреса в файлах `app.py` и `interact.py`
+13. Запустить файл `interact.py`
+14. Установка завершена, для работы с программой запустить файл `app.py`
