@@ -51,6 +51,17 @@
 
 ![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/72f668e8-bda7-45f8-b6f3-7a7f5ccfa710)
 
+Важно заметить, что если баланс клиента меньше, чем первый взнос по кредиту (сумма кредита, разделенная на количество месяцев), то в кредите ему будет откзано. Проверим это на аккаунте с нулевым балансом:
+
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/b98a8201-4680-4b4d-a16b-a8dd2db3e52c)
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/e7bd0075-a245-42dc-9718-1f8b776be16a)
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/48d04107-67f5-434d-b6dc-82a2e8c28ea7)
+
+Процентная ставка по кредиту рассчитывается следующим образом:
+* если сумма меньше 10 CRT, ставка составляет 10%;
+* если сумма от 10 CRT до 20 CRT, ставка составляет 8%;
+* если сумма больше или равна 20 CRT, ставка составляет 5%.
+
 ## Инструкция по установке
 1. Установить Ganache: https://archive.trufflesuite.com/ganache/
 2. Установить библиотеку brownie: `pip install eth-brownie`
