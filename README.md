@@ -7,7 +7,7 @@
 * Библиотеки PySimpleGUI, Brownie
 ## Описание файлов проекта
 * **scripts/app.py**: основной файл приложения, содержащий код пользовательского интерфейса;
-* **scripts/app.py**: код для деплоя смарт-контрактов;
+* **scripts/deploy.py**: код для деплоя смарт-контрактов;
 * **scripts/interact.py**: код для проверки работы с контрактами;
 * **brownie-config.yaml**: файл конфигурации для brownie;
 * **contracts/Bank.sol**: код основного контракта, предоставляющего функционал выдачи и возврата кредитов;
@@ -23,11 +23,11 @@
 
 Здесь отображается текущий баланс пользователя и его задолженность в токенах CRT, а также присутствует возможность взять кредит или вернуть сумму в банк, если кредит взят. Нажав на кнопку "Взять кредит", попадаем в окно выдачи кредита:
 
-![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/0a375c6c-9dc5-4fbf-a985-37431ad3eb2f)
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/a00689eb-2639-4c68-a5cc-bc1a08b3d61b)
 
 Введем сумму кредита, количество месяцев, на которое хотим его взять, и нажмем "Рассчитать сумму":
 
-![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/0d2da614-aef2-4a75-ac6e-e6c9a7795d77)
+![image](https://github.com/Ilyaant/blockchain-bank-project/assets/21258800/0d4d3691-b371-494a-beb6-de3948eb55cf)
 
 Приложение рассчитало, какую сумму на таких условиях будет необходимо вернуть в банк. Нажмем на кнопку "Взять кредит", выводится окно об успехе, и баланс на аккаунте становится на 50 CRT больше:
 
@@ -64,5 +64,5 @@
 10. Выполнить `brownie networks add Ethereum ganache-local host=http://127.0.0.1:7545 chainid=5777`, где `host` и `chainid` берутся из проекта Ganache.
 11. Выполнить `brownie run scripts/deploy.py --network ganache-local`
 12. Из вывода предыдущей команды скопировать адреса задеплоенных контрактов и заменить ими имеющиеся адреса в файлах `app.py` и `interact.py`
-13. Запустить файл `interact.py`
+13. Выполнить `brownie run scripts/interact.py`
 14. Установка завершена, для работы с программой запустить файл `app.py`
