@@ -6,14 +6,15 @@ load_dotenv()
 sg.theme('sandy beach')
 
 network.connect('ganache-local')
-credit_address = '0x5b0630DDF920A7a91A6eD8B96fdfB22589783e14'
-bank_address = '0xB6DEBA730C1Dd36E11cd7dB243f1727533828D0e'
+credit_address = '0x38308EC3a90E733A8478D587dd806809cbaAd888'
+bank_address = '0x9A6e4616C190b98AB1A6EFfafEb05BdCBd7e8216'
 credit_contract = Contract(credit_address)
 bank_contract = Contract(bank_address)
 
 account = accounts.add(os.getenv("PRIVATE_KEY"))
 account1 = accounts.add(os.getenv("PRIVATE_KEY1"))
 account2 = accounts.add(os.getenv("PRIVATE_KEY2"))
+account3 = accounts.add(os.getenv('PRIVATE_KEY3'))
 
 def find_client(login):
     cl = bank_contract.getClients()
@@ -42,6 +43,7 @@ def take_credit_window():
         [sg.Push(), sg.InputText(key='-CREDIT-MONTH-'), sg.Push()],
         [sg.Push(), sg.Button('Рассчитать сумму'), sg.Push()],
         [sg.Push(), sg.Text('Общая сумма кредита составит:', key='-TOTAL-CREDIT-'), sg.Push()],
+        [sg.Push(), sg.Text('Процентная ставка составит:', key='-PERCENT-'), sg.Push()],
         [sg.Push(), sg.Button('Взять кредит'), sg.Push()],
         [sg.Push(), sg.Button('Выйти')]
     ]
@@ -62,7 +64,8 @@ def return_credit_window(acc, login):
 users_db = [
     ('acc0', 'acc0'),
     ('acc1', 'acc1'),
-    ('acc2', 'acc2')
+    ('acc2', 'acc2'),
+    ('acc3', 'acc3')
 ]
 
 layout = [
@@ -94,6 +97,8 @@ while True:
             acc_to_use = account1
         if values['-LOGIN-'] == 'acc2':
             acc_to_use = account2
+        if values['-LOGIN-'] == 'acc3':
+            acc_to_use = account3
 
         window_main = main_window(acc_to_use, login)
         while True:
@@ -111,18 +116,24 @@ while True:
                         s = int(values_t['-CREDIT-SUM-'])
                         m = int(values_t['-CREDIT-MONTH-'])
                         sum_credit = bank_contract.calculateTotalSum(s, m)
+                        percentage_rate = bank_contract.calcPercentageRate(s)
                         window_take_credit['-TOTAL-CREDIT-'].update(f'Общая сумма кредита составит: {sum_credit} CRT')
+                        window_take_credit['-PERCENT-'].update(f'Процентная ставка составит: {percentage_rate}%')
                     if event_t == 'Взять кредит':
                         try:
                             s = int(values_t['-CREDIT-SUM-'])
                             m = int(values_t['-CREDIT-MONTH-'])
                             sum_credit = bank_contract.calculateTotalSum(s, m)
-                            credit_contract.approve(bank_address, sum_credit, {'from': acc_to_use})
-                            bank_contract.takeCredit(login, pwd, s, m, {'from': acc_to_use})
-                            sg.Popup('Успешно оформили кредит', title='Успех')
-                            window_main['-MAIN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
-                            cl = find_client(login)
-                            window_main['-MAIN-RETURN-'].update(f'Ваша задолженность: {cl[4][2]} CRT')
+                            percentage_rate = bank_contract.calcPercentageRate(s)
+                            if credit_contract.balanceOf(acc_to_use) >= sum_credit/m:
+                                credit_contract.approve(bank_address, sum_credit, {'from': acc_to_use})
+                                bank_contract.takeCredit(login, pwd, s, m, {'from': acc_to_use})
+                                sg.Popup(f'Успешно оформили кредит', title='Успех')
+                                window_main['-MAIN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
+                                cl = find_client(login)
+                                window_main['-MAIN-RETURN-'].update(f'Ваша задолженность: {cl[4][2]} CRT')
+                            else:
+                                sg.Popup('Не получилось оформить кредит. У вас недостаточно средств на счету', title='Ошибка')
                         except:
                             sg.Popup('Не получилось оформить кредит', title='Ошибка')
                     
@@ -139,9 +150,9 @@ while True:
                             pay = int(values_r['-CREDIT-MONTH-'])
                             bank_contract.returnCredit(pay, {'from': acc_to_use})
                             sg.Popup('Успешно внесен платеж', title='Успех')
+                            cl = find_client(login)
                             window_main['-MAIN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
                             window_return_credit['-RETURN-BALANCE-'].update(f'Ваш баланс: {credit_contract.balanceOf(acc_to_use)} CRT')
-                            cl = find_client(login)
                             window_return_credit['-RETURN-SUM-'].update(f'Сумма к погашению: {cl[4][2]} CRT')
                             window_main['-MAIN-RETURN-'].update(f'Ваша задолженность: {cl[4][2]} CRT')
                         except:

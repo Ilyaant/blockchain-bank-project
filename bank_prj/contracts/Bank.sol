@@ -21,7 +21,7 @@ contract Bank {
         Credit credit; // кредит, соответствующий данному клиенту
     }
 
-    uint256 constant percentageRate = 5; // процентная ставка
+    // uint256 constant percentageRate = 5; // процентная ставка
     uint256 private _storage; // количество токенов в контракте
     uint private numberClient; // количество клиентов
     address payable private owner; // адрес владельца контракта
@@ -100,6 +100,7 @@ contract Bank {
         uint256 num,
         uint256 month
     ) public {
+        uint256 percentageRate = calcPercentageRate(num);
         for (uint i = 0; i < numberClient; i++) {
             if (checkClient(clients[i], login, password)) {
                 if (_storage >= num && clients[i].credit.totalSum == 0) {
@@ -158,6 +159,18 @@ contract Bank {
         }
     }
 
+    function calcPercentageRate(uint256 sum) public pure returns (uint256) {
+        uint256 percentageRate = 0;
+        if (sum < 10) {
+            percentageRate = 10;
+        } else if (sum >= 10 && sum < 20) {
+            percentageRate = 8;
+        } else {
+            percentageRate = 5;
+        }
+        return percentageRate;
+    }
+
     // узнать сколько токенов в хранилище
     function getStorage() public view checkOwner returns (uint256) {
         return _storage;
@@ -173,6 +186,7 @@ contract Bank {
         uint256 sum,
         uint256 months
     ) public pure returns (uint256) {
+        uint256 percentageRate = calcPercentageRate(sum);
         return (sum * ((100 + percentageRate) ** months)) / (100 ** months);
     }
 
